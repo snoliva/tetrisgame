@@ -20,9 +20,9 @@ class Figure:
         [[1, 5, 9, 13], [4, 5, 6, 7]],
         [[4, 5, 9, 10], [2, 6, 5, 9]],
         [[6, 7, 9, 10], [1, 5, 6, 10]],
-        [[1, 2, 5, 9], [0, 4, 5 ,6], [1, 5, 9, 8], [4, 5, 6, 10]],
+        [[1, 2, 5, 9], [0, 4, 5, 6], [1, 5, 9, 8], [4, 5, 6, 10]],
         [[1, 2, 6, 10], [5, 6, 7, 9], [2, 6, 10, 11], [3, 5, 6, 7]],
-        [[1, 4, 5, 6 ], [1, 4, 5, 9], [4, 5, 6, 9], [1, 5, 6, 9]],
+        [[1, 4, 5, 6], [1, 4, 5, 9], [4, 5, 6, 9], [1, 5, 6, 9]],
         [[1, 2, 5, 6]],
     ]
 
@@ -32,7 +32,7 @@ class Figure:
         self.type = random.randint(0, len(self.figures) - 1)
         self.color = random.randint(1, len(colors) - 1)
         self.rotation = 0
-        
+
     def image(self):
         return self.figures[self.type][self.rotation]
 
@@ -58,13 +58,13 @@ class Tetris:
         self.score = 0
         self.state = "start"
         for i in range(height):
-            new_line =[]
+            new_line = []
             for j in range(width):
                 new_line.append(0)
             self.field.append(new_line)
     
     def new_figure(self):
-        self.figure = Figure(3,0)
+        self.figure = Figure(3, 0)
 
     def intersects(self):
         intersection = False
@@ -72,9 +72,9 @@ class Tetris:
             for j in range(4):
                 if i * 4 + j in self.figure.image():
                     if i + self.figure.y > self.height - 1 or \
-                        j + self.figure.x > self.width -1 or \
-                        j + self.figure.x < 0 or \
-                        self.field[i + self.figure.y][j + self.figure.x] > 0:
+                            j + self.figure.x > self.width - 1 or \
+                            j + self.figure.x < 0 or \
+                            self.field[i + self.figure.y][j + self.figure.x] > 0:
                         intersection = True
         return intersection
 
@@ -113,7 +113,7 @@ class Tetris:
         self.new_figure()
         if self.intersects():
             self.state = "gameover"
-    
+
     def go_side(self, dx):
         old_x = self.figure.x
         self.figure.x += dx
@@ -143,7 +143,7 @@ fps = 25
 game = Tetris(20, 10)
 counter = 0
 
-presting_down = False
+pressing_down = False
 
 while not done:
     if game.figure is None:
@@ -151,8 +151,8 @@ while not done:
     counter += 1
     if counter > 100000:
         counter = 0
-    
-    if counter % (fps // game.level // 2) == 0 or presting_down:
+
+    if counter % (fps // game.level // 2) == 0 or pressing_down:
         if game.state == "start":
             game.go_down()
 
@@ -163,7 +163,7 @@ while not done:
             if event.key == pygame.K_UP:
                 game.rotate()
             if event.key == pygame.K_DOWN:
-                presting_down = True
+                pressing_down = True
             if event.key == pygame.K_LEFT:
                 game.go_side(-1)
             if event.key == pygame.K_RIGHT:
@@ -171,11 +171,11 @@ while not done:
             if event.key == pygame.K_SPACE:
                 game.go_space()
             if event.key == pygame.K_ESCAPE:
-                game.__init__(20,10)
-    
+                game.__init__(20, 10)
+
     if event.type == pygame.KEYUP:
-        if event.key == pygame.K_DOWN:
-            presting_down = False
+            if event.key == pygame.K_DOWN:
+                pressing_down = False
     
     screen.fill(GREYBLUE)
 
@@ -184,7 +184,7 @@ while not done:
             pygame.draw.rect(screen, NAVY, [game.x + game.zoom * j, game.y + game.zoom * i, game.zoom, game.zoom], 1)
             if game.field[i][j] > 0:
                 pygame.draw.rect(screen, colors[game.field[i][j]],
-                            [game.x + game.zoom * j + i, game.y + game.zoom * i + 1, game.zoom - 2, game.zoom -1])
+                                 [game.x + game.zoom * j + 1, game.y + game.zoom * i + 1, game.zoom - 2, game.zoom - 1])
 
     if game.figure is not None:
         for i in range(4):
@@ -192,9 +192,9 @@ while not done:
                 p = i * 4 + j
                 if p in game.figure.image():
                     pygame.draw.rect(screen, colors[game.figure.color],
-                                    [game.x + game.zoom + (j + game.figure.x) + 1,
-                                    game.y + game.zoom + (i + game.figure.y) + 1,
-                                    game.zoom - 2, game.zoom -2])
+                                     [game.x + game.zoom * (j + game.figure.x) + 1,
+                                      game.y + game.zoom * (i + game.figure.y) + 1,
+                                      game.zoom - 2, game.zoom - 2])
 
     font = pygame.font.SysFont('Calibri', 25, True, False)
     font1 = pygame.font.SysFont('Calibri', 65, True, False)
